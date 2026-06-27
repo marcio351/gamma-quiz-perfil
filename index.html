@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Perfil de Investidor | Gamma Quant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --orange:#f58a00;
+  --orange-dim:rgba(245,138,0,.14);
+  --orange-glow:rgba(245,138,0,.35);
+  --bg:#0a0a0a;
+  --bg2:#111;
+  --surface:rgba(255,255,255,.05);
+  --border:rgba(255,255,255,.09);
+  --white:#fff;
+  --gray:rgba(255,255,255,.5);
+  --font:'Montserrat',system-ui,sans-serif;
+  --ease:cubic-bezier(.4,0,.2,1);
+  --r:16px;
+}
+
+html{height:100%;background:var(--bg);color:var(--white);font-family:var(--font);}
+body{
+  min-height:100%;display:flex;flex-direction:column;align-items:center;
+  background:var(--bg);overflow-x:hidden;
+}
+
+#wrap{
+  width:100%;max-width:440px;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  position:relative;
+}
+
+/* ── HEADER ──────────────────────────── */
+#hdr{
+  position:sticky;top:0;z-index:50;
+  background:rgba(10,10,10,.92);
+  backdrop-filter:blur(20px);
+  padding:14px 20px 0;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.logo-row{
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:12px;
+}
+.logo-row img{height:30px;width:auto;}
+.logo-txt{font-size:17px;font-weight:900;color:var(--orange);letter-spacing:-.5px;display:none;}
+.logo-txt span{color:rgba(255,255,255,.7);}
+
+.prog-track{height:3px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;}
+.prog-fill{
+  height:100%;background:var(--orange);border-radius:99px;
+  width:0%;transition:width .5s var(--ease);
+  box-shadow:0 0 8px var(--orange-glow);
+}
+
+/* ── SCREENS ─────────────────────────── */
+.scr{
+  display:none;flex-direction:column;
+  padding:24px 20px 120px;
+  flex:1;
+  animation:fadeUp .38s var(--ease) both;
+}
+.scr.active{display:flex;}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(22px);}
+  to  {opacity:1;transform:translateY(0);}
+}
+
+/* ── INTRO + FORM ────────────────────── */
+#s-intro{align-items:center;text-align:center;padding-top:32px;}
+
+.intro-logo-big{height:42px;margin-bottom:28px;}
+.intro-logo-big-txt{font-size:21px;font-weight:900;color:var(--orange);margin-bottom:28px;letter-spacing:-.5px;display:none;}
+.intro-logo-big-txt span{color:rgba(255,255,255,.7);}
+
+.intro-title{
+  font-size:clamp(23px,6vw,29px);font-weight:900;
+  line-height:1.15;letter-spacing:-.5px;margin-bottom:10px;
+}
+.intro-title em{color:var(--orange);font-style:normal;}
+.intro-sub{font-size:13px;color:var(--gray);line-height:1.6;max-width:310px;margin:0 auto;}
+.intro-time{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;color:var(--gray);margin:10px 0 24px;
+}
+.intro-time::before{content:'⏱';font-size:13px;}
+
+.form-divider{
+  width:100%;display:flex;align-items:center;gap:10px;margin-bottom:16px;
+}
+.form-divider span{font-size:11px;color:var(--gray);white-space:nowrap;font-weight:700;}
+.form-divider::before,.form-divider::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+
+.form-field{
+  width:100%;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--r);
+  padding:15px 18px;color:var(--white);
+  font-family:var(--font);font-size:15px;outline:none;
+  transition:border-color .2s,box-shadow .2s;
+  margin-bottom:10px;
+}
+.form-field::placeholder{color:var(--gray);}
+.form-field:focus{border-color:var(--orange);box-shadow:0 0 0 3px var(--orange-dim);}
+.form-field.err{border-color:rgba(255,80,80,.6);}
+
+.form-stats{
+  display:flex;gap:0;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--r);
+  overflow:hidden;margin-bottom:20px;width:100%;
+}
+.fstat{flex:1;padding:14px 8px;text-align:center;border-right:1px solid var(--border);}
+.fstat:last-child{border-right:none;}
+.fstat-n{font-size:20px;font-weight:900;color:var(--orange);display:block;line-height:1;margin-bottom:3px;}
+.fstat-l{font-size:10px;color:var(--gray);font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
+
+.btn-main{
+  width:100%;padding:17px;background:var(--orange);color:#fff;
+  font-family:var(--font);font-size:15px;font-weight:800;
+  border:none;border-radius:var(--r);cursor:pointer;
+  box-shadow:0 4px 22px var(--orange-glow);
+  transition:all .25s var(--ease);letter-spacing:.3px;
+}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 8px 30px var(--orange-glow);}
+.btn-main:active{transform:translateY(0);}
+
+.privacy-note{font-size:11px;color:var(--gray);margin-top:10px;line-height:1.5;}
+.btn-skip{
+  margin-top:12px;font-size:12px;color:var(--gray);background:none;border:none;
+  cursor:pointer;font-family:var(--font);text-decoration:underline;transition:color .2s;
+}
+.btn-skip:hover{color:var(--white);}
+
+/* ── QUESTION ────────────────────────── */
+#s-q{padding-top:20px;}
+.q-meta{font-size:11px;font-weight:700;color:var(--orange);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.q-text{font-size:clamp(16px,4.5vw,21px);font-weight:800;line-height:1.3;letter-spacing:-.3px;margin-bottom:18px;}
+
+.cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.card{
+  position:relative;border-radius:var(--r);overflow:hidden;
+  cursor:pointer;border:2px solid transparent;
+  transition:border-color .25s,transform .2s,box-shadow .25s;
+  aspect-ratio:3/4;background:var(--bg2);
+}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.5);}
+.card.sel{border-color:var(--orange);box-shadow:0 0 0 1px var(--orange) inset,0 8px 28px var(--orange-dim);}
+
+.card-art{position:absolute;inset:0;background-size:cover;background-position:center;}
+.card-vignette{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(0,0,0,.08) 0%,rgba(0,0,0,.04) 38%,rgba(0,0,0,.72) 75%,rgba(0,0,0,.88) 100%);
+}
+.card-sel-overlay{position:absolute;inset:0;background:rgba(245,138,0,.12);opacity:0;transition:opacity .25s;}
+.card.sel .card-sel-overlay{opacity:1;}
+.card-emoji{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-58%);
+  font-size:36px;text-align:center;line-height:1;
+}
+.card-bottom{position:absolute;bottom:0;left:0;right:0;padding:10px 11px 12px;display:flex;align-items:center;gap:9px;}
+.card-radio{
+  width:21px;height:21px;border-radius:50%;flex-shrink:0;
+  border:2px solid rgba(255,255,255,.45);background:rgba(0,0,0,.4);
+  transition:all .25s;display:flex;align-items:center;justify-content:center;
+}
+.card.sel .card-radio{background:var(--orange);border-color:var(--orange);}
+.card-dot{width:7px;height:7px;border-radius:50%;background:#fff;opacity:0;transition:opacity .2s;}
+.card.sel .card-dot{opacity:1;}
+.card-label{font-size:12px;font-weight:700;color:#fff;line-height:1.25;text-shadow:0 1px 4px rgba(0,0,0,.6);flex:1;}
+
+/* ── CALCULATING ─────────────────────── */
+#s-calc{align-items:center;text-align:center;justify-content:center;padding-bottom:40px;}
+.calc-spin{width:86px;height:86px;position:relative;margin-bottom:24px;}
+.calc-ring{
+  width:100%;height:100%;border-radius:50%;
+  border:3px solid rgba(255,255,255,.06);border-top-color:var(--orange);
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.calc-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:28px;}
+.calc-t{font-size:19px;font-weight:800;margin-bottom:6px;}
+.calc-s{font-size:13px;color:var(--gray);margin-bottom:24px;}
+.calc-steps{display:flex;flex-direction:column;gap:8px;text-align:left;width:100%;max-width:270px;}
+.cstep{
+  display:flex;align-items:center;gap:10px;font-size:12px;
+  color:var(--gray);opacity:0;transform:translateY(8px);
+  transition:all .4s var(--ease);font-weight:600;
+}
+.cstep.show{opacity:1;transform:translateY(0);}
+.cstep.done{color:var(--white);}
+.cdot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);flex-shrink:0;transition:background .3s;}
+.cstep.done .cdot{background:var(--orange);}
+
+/* ── RESULT ──────────────────────────── */
+#s-result{padding-top:20px;padding-bottom:100px;}
+
+.r-headline{
+  font-size:clamp(20px,5.5vw,26px);font-weight:900;
+  line-height:1.18;letter-spacing:-.5px;
+  margin-bottom:10px;text-align:center;
+}
+.r-headline em{color:var(--orange);font-style:normal;}
+.r-subline{
+  font-size:13px;color:var(--gray);line-height:1.55;
+  text-align:center;margin-bottom:20px;
+}
+
+/* financial visual */
+.r-visual{
+  position:relative;width:100%;border-radius:20px;overflow:hidden;
+  background:linear-gradient(135deg,#0d1a24 0%,#0f2030 50%,#132840 100%);
+  margin-bottom:20px;padding:20px 16px 16px;min-height:160px;
+}
+.r-vis-chart{width:100%;height:70px;display:block;margin-bottom:12px;}
+.r-pills{display:flex;gap:8px;flex-wrap:wrap;}
+.r-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 12px;
+  background:rgba(0,0,0,.5);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:99px;font-size:12px;font-weight:700;
+  backdrop-filter:blur(8px);
+}
+.r-pill-dot{width:8px;height:8px;border-radius:50%;background:var(--orange);}
+
+.r-desc{
+  font-size:14px;color:var(--gray);line-height:1.7;
+  text-align:center;margin-bottom:24px;
+}
+
+/* benefit list */
+.r-benefits-title{
+  font-size:16px;font-weight:900;text-align:center;
+  margin-bottom:14px;line-height:1.3;
+}
+.r-benefits-title em{color:var(--orange);font-style:normal;}
+.r-benefits{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+.r-benefit{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:15px 16px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;text-align:left;
+}
+.r-ben-icon{
+  width:36px;height:36px;border-radius:10px;flex-shrink:0;
+  background:var(--orange-dim);border:1px solid rgba(245,138,0,.2);
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.r-ben-text{flex:1;min-width:0;}
+.r-ben-title{font-size:13px;font-weight:800;margin-bottom:2px;}
+.r-ben-sub{font-size:12px;color:var(--gray);line-height:1.45;}
+
+/* quote */
+.r-quote{
+  padding:18px 20px;
+  background:var(--orange-dim);border:1px solid rgba(245,138,0,.2);
+  border-left:3px solid var(--orange);border-radius:12px;
+  font-size:14px;font-weight:700;line-height:1.5;
+  margin-bottom:24px;font-style:italic;color:rgba(255,255,255,.85);
+}
+
+/* metrics bars */
+.r-metrics-title{font-size:14px;font-weight:800;text-align:center;margin-bottom:16px;}
+.r-metrics{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
+.r-metric{display:flex;flex-direction:column;gap:6px;}
+.r-met-label{display:flex;justify-content:space-between;font-size:12px;font-weight:700;}
+.r-met-label span:last-child{color:var(--gray);}
+.r-met-bars{display:flex;flex-direction:column;gap:4px;}
+.r-bar-row{display:flex;align-items:center;gap:8px;}
+.r-bar-name{font-size:10px;font-weight:700;color:var(--gray);width:28px;flex-shrink:0;letter-spacing:.3px;}
+.r-bar-track{flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;}
+.r-bar-fill{height:100%;border-radius:99px;transition:width 1s var(--ease);}
+.r-bar-fill.gq{background:var(--orange);}
+.r-bar-fill.mk{background:rgba(255,255,255,.25);}
+.r-bar-val{font-size:10px;font-weight:700;width:30px;text-align:right;flex-shrink:0;}
+
+/* ── FIXED BOTTOM CTA ─────────────────── */
+#fixed-cta{
+  display:none;position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:440px;
+  padding:12px 20px 20px;
+  background:linear-gradient(to top,rgba(10,10,10,1) 60%,rgba(10,10,10,0));
+  z-index:100;
+}
+#fixed-cta.show{display:block;}
+.btn-wa{
+  width:100%;padding:17px;background:#25D366;color:#fff;
+  font-family:var(--font);font-size:15px;font-weight:800;
+  border:none;border-radius:var(--r);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .25s;
+}
+.btn-wa:hover{filter:brightness(1.1);}
+.btn-restart-small{
+  display:block;text-align:center;font-size:11px;color:var(--gray);
+  background:none;border:none;cursor:pointer;font-family:var(--font);
+  text-decoration:underline;margin-top:8px;transition:color .2s;width:100%;
+}
+.btn-restart-small:hover{color:var(--white);}
+
+/* ── AMBIENT ─────────────────────────── */
+.orb{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:-1;}
+.orb1{width:340px;height:340px;background:rgba(245,138,0,.05);top:-80px;right:-80px;}
+.orb2{width:260px;height:260px;background:rgba(245,138,0,.04);bottom:-60px;left:-60px;}
+
+@media(max-width:360px){
+  .cards-grid{gap:8px;}
+  .card-label{font-size:11px;}
+}
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<div id="wrap">
+
+  <!-- HEADER -->
+  <div id="hdr">
+    <div class="logo-row">
+      <img src="./assets/logo.png" alt="Gamma Quant"
+           onerror="this.style.display='none';document.querySelector('.logo-txt').style.display='block'">
+      <span class="logo-txt">Gamma<span>Quant</span></span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="pFill"></div></div>
+  </div>
+
+  <!-- ── INTRO + LEAD FORM ─────────────────── -->
+  <div class="scr active" id="s-intro">
+
+    <div style="text-align:center;display:flex;flex-direction:column;align-items:center;">
+      <img src="./assets/logo.png" class="intro-logo-big" alt="Gamma Quant"
+           onerror="this.style.display='none';document.getElementById('iLogoTxt').style.display='block'">
+      <div id="iLogoTxt" class="intro-logo-big-txt">Gamma<span>Quant</span></div>
+
+      <h1 class="intro-title">Qual é o seu<br><em>perfil de investidor?</em></h1>
+      <p class="intro-sub">Responda 6 perguntas e descubra a estratégia quantitativa ideal para o seu momento.</p>
+      <div class="intro-time">Leva em média 3 minutos para finalizar</div>
+
+      <div class="form-stats">
+        <div class="fstat"><span class="fstat-n">6</span><span class="fstat-l">Perguntas</span></div>
+        <div class="fstat"><span class="fstat-n">3</span><span class="fstat-l">Perfis</span></div>
+        <div class="fstat"><span class="fstat-n">100%</span><span class="fstat-l">Gratuito</span></div>
+      </div>
+
+      <div class="form-divider"><span>Coloque seus dados para começar</span></div>
+
+      <input class="form-field" id="f-nome"  type="text"  placeholder="Seu nome completo..."      autocomplete="name">
+      <input class="form-field" id="f-email" type="email" placeholder="Seu melhor e-mail..."      autocomplete="email">
+      <input class="form-field" id="f-wpp"   type="tel"   placeholder="WhatsApp com DDD..."       autocomplete="tel"
+             oninput="maskPhone(this)">
+
+      <button class="btn-main" onclick="submitIntro()">Começar o Quiz →</button>
+      <p class="privacy-note">🔒 Seus dados são 100% seguros. Não enviamos spam.</p>
+      <button class="btn-skip" onclick="window.open(CFG.brand.siteUrl,'_blank')">Ir direto para o site</button>
+    </div>
+  </div>
+
+  <!-- ── QUESTIONS ─────────────────────────── -->
+  <div class="scr" id="s-q">
+    <div class="q-meta" id="qMeta">PERGUNTA 1 DE 6</div>
+    <div class="q-text" id="qText"></div>
+    <div class="cards-grid" id="qCards"></div>
+  </div>
+
+  <!-- ── CALCULATING ────────────────────────── -->
+  <div class="scr" id="s-calc">
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <div class="calc-spin">
+        <div class="calc-ring"></div>
+        <div class="calc-icon">📈</div>
+      </div>
+      <div class="calc-t">Analisando seu perfil...</div>
+      <div class="calc-s">Processando respostas</div>
+      <div class="calc-steps">
+        <div class="cstep" id="cs1"><div class="cdot"></div>Mapeando tolerância ao risco</div>
+        <div class="cstep" id="cs2"><div class="cdot"></div>Cruzando padrões comportamentais</div>
+        <div class="cstep" id="cs3"><div class="cdot"></div>Calculando score quantitativo</div>
+        <div class="cstep" id="cs4"><div class="cdot"></div>Gerando estratégia personalizada</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RESULT ─────────────────────────────── -->
+  <div class="scr" id="s-result">
+    <div class="r-headline" id="rHeadline"></div>
+    <div class="r-subline"  id="rSubline"></div>
+
+    <!-- financial visual -->
+    <div class="r-visual" id="rVisual">
+      <svg class="r-vis-chart" id="rChart" viewBox="0 0 300 70" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="gFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f58a00" stop-opacity=".18"/>
+            <stop offset="100%" stop-color="#f58a00" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <polygon id="rChartFill" points="" fill="url(#gFill)"/>
+        <polyline id="rChartLine" points="" stroke="#f58a00" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="r-pills">
+        <div class="r-pill"><div class="r-pill-dot"></div><span id="rPill1"></span></div>
+        <div class="r-pill"><div class="r-pill-dot"></div><span id="rPill2"></span></div>
+      </div>
+    </div>
+
+    <p class="r-desc" id="rDesc"></p>
+
+    <div class="r-benefits-title" id="rBenTitle"></div>
+    <div class="r-benefits" id="rBenefits"></div>
+
+    <div class="r-quote" id="rQuote"></div>
+
+    <div class="r-metrics-title">Comparativo de performance</div>
+    <div class="r-metrics" id="rMetrics"></div>
+  </div>
+
+</div><!-- /wrap -->
+
+<!-- FIXED BOTTOM CTA -->
+<div id="fixed-cta">
+  <button class="btn-wa" id="rWaBtn">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    Falar com Consultor Gamma
+  </button>
+  <button class="btn-restart-small" onclick="restartQuiz()">Refazer o quiz</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// CONFIG — altere aqui para mudar de nicho
+// ═══════════════════════════════════════════════
+const CFG = {
+  brand: {
+    name: "Gamma Quant",
+    waNumber: "5521990089490",
+    siteUrl: "https://gammaquant.com.br"
+  },
+  questions: [
+    {
+      text: "Qual é o seu principal objetivo com os investimentos?",
+      opts: [
+        { label: "Preservar meu patrimônio",  art: "linear-gradient(160deg,#0a1628 0%,#0e2846 50%,#1a3a5f 100%)", emoji: "🏦", score: 1 },
+        { label: "Crescer com equilíbrio",    art: "linear-gradient(160deg,#0a1a2a 0%,#0f2e40 50%,#1a4f5a 100%)", emoji: "⚖️",  score: 2 },
+        { label: "Maximizar retornos",         art: "linear-gradient(160deg,#2a1200 0%,#5a2800 50%,#8a4400 100%)", emoji: "📈", score: 3 },
+        { label: "Multiplicar capital ativo",  art: "linear-gradient(160deg,#001a06 0%,#003318 50%,#005a2a 100%)", emoji: "💹", score: 4 }
+      ]
+    },
+    {
+      text: "Se sua carteira caísse 20% em um mês, o que faria?",
+      opts: [
+        { label: "Venderia imediatamente",        art: "linear-gradient(160deg,#1a0808 0%,#3a1010 50%,#5a1818 100%)", emoji: "😰", score: 1 },
+        { label: "Ficaria preocupado, aguardaria", art: "linear-gradient(160deg,#1a1a12 0%,#2a2a1a 50%,#3a3a22 100%)", emoji: "⏳", score: 2 },
+        { label: "Analisaria e compraria mais",    art: "linear-gradient(160deg,#0a1a0a 0%,#183018 50%,#285028 100%)",  emoji: "🧠", score: 3 },
+        { label: "Aumentaria a posição",           art: "linear-gradient(160deg,#1a1000 0%,#3a2800 50%,#6a4800 100%)", emoji: "⚡", score: 4 }
+      ]
+    },
+    {
+      text: "Há quanto tempo você investe no mercado financeiro?",
+      opts: [
+        { label: "Nunca investi",      art: "linear-gradient(160deg,#0a0a1a 0%,#101028 50%,#1a1a3a 100%)", emoji: "🌱", score: 1 },
+        { label: "Menos de 2 anos",   art: "linear-gradient(160deg,#0a1a2a 0%,#152535 50%,#203040 100%)", emoji: "📚", score: 2 },
+        { label: "Entre 2 e 5 anos",  art: "linear-gradient(160deg,#1a1200 0%,#3a2a00 50%,#5a4200 100%)", emoji: "🎯", score: 3 },
+        { label: "Mais de 5 anos",    art: "linear-gradient(160deg,#1a0a00 0%,#3a1e00 50%,#5a3200 100%)", emoji: "🏆", score: 4 }
+      ]
+    },
+    {
+      text: "Qual % da sua renda mensal você compromete com investimentos?",
+      opts: [
+        { label: "Até 5%",       art: "linear-gradient(160deg,#101018 0%,#181828 50%,#202035 100%)", emoji: "💰", score: 1 },
+        { label: "5% a 15%",     art: "linear-gradient(160deg,#0f1f2a 0%,#18303a 50%,#224050 100%)", emoji: "💵", score: 2 },
+        { label: "15% a 30%",    art: "linear-gradient(160deg,#1f1000 0%,#3f2200 50%,#5f3400 100%)", emoji: "💳", score: 3 },
+        { label: "Mais de 30%",  art: "linear-gradient(160deg,#1a0800 0%,#3a1800 50%,#602800 100%)", emoji: "🏦", score: 4 }
+      ]
+    },
+    {
+      text: "Qual cenário de investimento mais te atrai?",
+      opts: [
+        { label: "Renda fixa garantida",         art: "linear-gradient(160deg,#080f1a 0%,#0d1f35 50%,#123050 100%)", emoji: "🔒", score: 1 },
+        { label: "Carteira diversificada",       art: "linear-gradient(160deg,#0d1a20 0%,#182a30 50%,#253a42 100%)", emoji: "🌐", score: 2 },
+        { label: "Ações com foco em crescimento", art: "linear-gradient(160deg,#1a1000 0%,#2f2000 50%,#4a3500 100%)", emoji: "📊", score: 3 },
+        { label: "Modelos quantitativos",        art: "linear-gradient(160deg,#0a0a00 0%,#1a1800 50%,#2a2800 100%)", emoji: "🤖", score: 4 }
+      ]
+    },
+    {
+      text: "Como você descreve sua tolerância a perdas temporárias?",
+      opts: [
+        { label: "Praticamente zero",          art: "linear-gradient(160deg,#200808 0%,#350f0f 50%,#4a1515 100%)", emoji: "🔴", score: 1 },
+        { label: "Baixa — prefiro estabilidade", art: "linear-gradient(160deg,#1a1800 0%,#2a2800 50%,#3a3800 100%)", emoji: "🟡", score: 2 },
+        { label: "Média — ok no longo prazo",   art: "linear-gradient(160deg,#1a1000 0%,#3a2200 50%,#5a3400 100%)", emoji: "🟠", score: 3 },
+        { label: "Alta — faz parte da estratégia", art: "linear-gradient(160deg,#001a08 0%,#003018 50%,#004a28 100%)", emoji: "🟢", score: 4 }
+      ]
+    }
+  ],
+  profiles: {
+    conservador: {
+      range: [6, 12],
+      headline: "Com base no seu perfil conservador, o seu maior risco <em>não é a volatilidade.</em>",
+      subline: "É a inflação corroendo silenciosamente o patrimônio que você construiu.",
+      desc: "A Gamma Quant usa modelos estatísticos para extrair retornos reais acima da inflação — sem expor você a oscilações que tiram o sono. Consistência e previsibilidade são a base da sua estratégia.",
+      pill1: "Drawdown &lt; 3%", pill2: "Retorno real positivo",
+      chartPts: "0,65 40,58 80,52 120,45 160,40 200,38 240,35 300,28",
+      benTitle: "Com a Gamma Quant, seu perfil tem acesso a:",
+      benefits: [
+        { icon: "🔒", title: "Proteção contra inflação",      sub: "Estratégias de baixo risco com retorno real consistente acima do CDI" },
+        { icon: "📊", title: "Monitoramento quantitativo",    sub: "Modelos estatísticos que identificam oportunidades de baixo risco em tempo real" },
+        { icon: "💧", title: "Alta liquidez garantida",       sub: "Alocação inteligente sem travar seu capital por longos períodos" },
+        { icon: "🛡️", title: "Drawdown controlado",          sub: "Limite rigoroso de perdas temporárias — seu patrimônio nunca fica exposto" }
+      ],
+      quote: "O mercado oscila. A matemática organiza. Seu trabalho é manter a disciplina — o modelo faz o resto.",
+      metrics: [
+        { label: "Consistência", gq: 92, mk: 55 },
+        { label: "Risco controlado", gq: 88, mk: 42 },
+        { label: "Retorno real", gq: 78, mk: 38 }
+      ],
+      waMsg: "Olá! Fiz o quiz da Gamma Quant e sou do Perfil Conservador. Quero conhecer as estratégias de baixo risco disponíveis."
+    },
+    moderado: {
+      range: [13, 18],
+      headline: "Com base no seu perfil moderado, o seu diferencial é <em>o equilíbrio estratégico.</em>",
+      subline: "Não qualquer diversificação — a que é guiada por dados, não por achismo.",
+      desc: "Com metodologia quantitativa é possível capturar oportunidades do mercado mantendo a volatilidade dentro da sua zona de conforto. Você não precisa escolher entre crescimento e segurança.",
+      pill1: "Diversificação inteligente", pill2: "Retorno superior",
+      chartPts: "0,60 40,50 80,55 120,38 160,30 200,25 240,18 300,10",
+      benTitle: "Com a Gamma Quant, seu perfil tem acesso a:",
+      benefits: [
+        { icon: "⚖️", title: "Diversificação quantitativa",  sub: "Carteira balanceada por modelos estatísticos, não por intuição do gestor" },
+        { icon: "📈", title: "Captura de assimetrias",       sub: "Algoritmos que identificam momentos de entrada e saída com precisão matemática" },
+        { icon: "🎯", title: "Gestão ativa de risco",        sub: "Ajuste automático de posições conforme a volatilidade do mercado" },
+        { icon: "🔄", title: "Rebalanceamento inteligente",  sub: "Carteira otimizada continuamente para manter o perfil risco-retorno ideal" }
+      ],
+      quote: "Volatilidade não é inimiga. É matéria-prima. O que define o resultado é o modelo que você usa para processá-la.",
+      metrics: [
+        { label: "Retorno ajustado", gq: 87, mk: 48 },
+        { label: "Sharpe ratio",     gq: 82, mk: 40 },
+        { label: "Consistência",     gq: 85, mk: 52 }
+      ],
+      waMsg: "Olá! Fiz o quiz da Gamma Quant e sou do Perfil Moderado. Quero conhecer as estratégias de equilíbrio risco-retorno disponíveis."
+    },
+    arrojado: {
+      range: [19, 24],
+      headline: "Com base no seu perfil arrojado, o que te separa da maioria é <em>a tolerância à volatilidade.</em>",
+      subline: "A Gamma Quant transforma essa tolerância em vantagem matemática sobre o mercado.",
+      desc: "Você pensa como um estrategista. Sua disposição para suportar oscilações temporárias é o ingrediente que faltava para estratégias quantitativas avançadas que exploram assimetrias do mercado.",
+      pill1: "Alpha consistente", pill2: "Operação quantitativa",
+      chartPts: "0,62 40,48 80,42 120,28 160,18 200,12 240,6 300,2",
+      benTitle: "Com a Gamma Quant, seu perfil tem acesso a:",
+      benefits: [
+        { icon: "🤖", title: "Modelos quantitativos avançados", sub: "Estratégias baseadas em pair trading, cointegração e reversão à média" },
+        { icon: "⚡", title: "Exploração de assimetrias",       sub: "Algoritmos que capturam desequilíbrios antes que o mercado os corrija" },
+        { icon: "🎯", title: "Alpha gerado por dados",          sub: "Retorno descorrelacionado do mercado — performance independente do índice" },
+        { icon: "📊", title: "Gestão de risco sistêmica",       sub: "Stops automáticos e controle de drawdown em cada operação" }
+      ],
+      quote: "Enquanto outros operam emoção, você operará probabilidade. Esse é o único edge que dura no longo prazo.",
+      metrics: [
+        { label: "Alpha gerado",     gq: 94, mk: 35 },
+        { label: "Win rate",         gq: 78, mk: 52 },
+        { label: "Retorno anualizado", gq: 91, mk: 44 }
+      ],
+      waMsg: "Olá! Fiz o quiz da Gamma Quant e sou do Perfil Arrojado. Quero conhecer as estratégias quantitativas avançadas disponíveis."
+    }
+  }
+};
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let curQ = 0;
+let answers = [];
+let userData = {};
+
+// ═══════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════
+function show(id) {
+  document.querySelectorAll('.scr').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  el.classList.remove('active');
+  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('active')));
+
+  const showCta = id === 's-result';
+  document.getElementById('fixed-cta').classList.toggle('show', showCta);
+}
+
+function setProgress(q, total) {
+  document.getElementById('pFill').style.width =
+    (total > 0 ? (q / total) * 100 : 0) + '%';
+}
+
+function maskPhone(el) {
+  let v = el.value.replace(/\D/g,'');
+  if (v.length > 11) v = v.slice(0,11);
+  if      (v.length > 7) v = '('+v.slice(0,2)+') '+v.slice(2,7)+'-'+v.slice(7);
+  else if (v.length > 2) v = '('+v.slice(0,2)+') '+v.slice(2);
+  else if (v.length > 0) v = '('+v;
+  el.value = v;
+}
+
+function shake(el) {
+  el.classList.add('err');
+  el.focus();
+  setTimeout(() => el.classList.remove('err'), 2000);
+}
+
+// ═══════════════════════════════════════════════
+// QUIZ FLOW
+// ═══════════════════════════════════════════════
+function submitIntro() {
+  const nome  = document.getElementById('f-nome').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const wpp   = document.getElementById('f-wpp').value.trim();
+
+  if (!nome)  { shake(document.getElementById('f-nome'));  return; }
+  if (!email || !email.includes('@')) { shake(document.getElementById('f-email')); return; }
+
+  userData = { nome, email, wpp };
+  curQ = 0;
+  answers = [];
+  renderQ(0);
+}
+
+function renderQ(idx) {
+  const q     = CFG.questions[idx];
+  const total = CFG.questions.length;
+
+  document.getElementById('qMeta').textContent = 'PERGUNTA ' + (idx+1) + ' DE ' + total;
+  document.getElementById('qText').textContent = q.text;
+  setProgress(idx, total);
+
+  const grid = document.getElementById('qCards');
+  grid.innerHTML = '';
+
+  q.opts.forEach((opt, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-art" style="background:${opt.art}"></div>
+      <div class="card-art" style="background:radial-gradient(circle at 50% 30%,rgba(245,138,0,.07) 0%,transparent 65%)"></div>
+      <div class="card-vignette"></div>
+      <div class="card-sel-overlay"></div>
+      <div class="card-emoji">${opt.emoji}</div>
+      <div class="card-bottom">
+        <div class="card-radio"><div class="card-dot"></div></div>
+        <div class="card-label">${opt.label}</div>
+      </div>`;
+    card.style.cssText = 'opacity:0;transform:translateY(20px)';
+    card.addEventListener('click', () => pickOption(card, opt.score, idx));
+    grid.appendChild(card);
+    setTimeout(() => {
+      card.style.transition = 'opacity .4s ease,transform .4s ease,border-color .25s,box-shadow .25s';
+      card.style.opacity = '1';
+      card.style.transform = 'translateY(0)';
+    }, 60 + i*70);
+  });
+
+  show('s-q');
+}
+
+function pickOption(cardEl, score, qIdx) {
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('sel'));
+  cardEl.classList.add('sel');
+  answers[qIdx] = score;
+
+  setTimeout(() => {
+    curQ++;
+    if (curQ < CFG.questions.length) {
+      renderQ(curQ);
+    } else {
+      setProgress(CFG.questions.length, CFG.questions.length);
+      showCalc();
+    }
+  }, 420);
+}
+
+function showCalc() {
+  show('s-calc');
+  const steps = ['cs1','cs2','cs3','cs4'];
+  steps.forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('show','done');
+  });
+  steps.forEach((id,i) => {
+    setTimeout(() => document.getElementById(id).classList.add('show'), 250 + i*550);
+    setTimeout(() => document.getElementById(id).classList.add('done'), 500 + i*550);
+  });
+  setTimeout(showResult, 250 + steps.length*550 + 500);
+}
+
+function showResult() {
+  const score = answers.reduce((s,v) => s+v, 0);
+  let p;
+  if      (score <= 12) p = CFG.profiles.conservador;
+  else if (score <= 18) p = CFG.profiles.moderado;
+  else                  p = CFG.profiles.arrojado;
+
+  // headline (may have <em>)
+  document.getElementById('rHeadline').innerHTML = p.headline;
+  document.getElementById('rSubline').textContent = p.subline;
+
+  // chart
+  const pts = p.chartPts;
+  const ptsArr = pts.split(' ').map(pt => {
+    const [x,y] = pt.split(',');
+    return {x: parseFloat(x), y: parseFloat(y)};
+  });
+  const fillPts = pts + ' 300,70 0,70';
+  document.getElementById('rChartFill').setAttribute('points', fillPts);
+  document.getElementById('rChartLine').setAttribute('points', pts);
+
+  // pills
+  document.getElementById('rPill1').innerHTML = p.pill1;
+  document.getElementById('rPill2').innerHTML = p.pill2;
+
+  document.getElementById('rDesc').textContent = p.desc;
+
+  // benefits
+  document.getElementById('rBenTitle').innerHTML = p.benTitle;
+  document.getElementById('rBenefits').innerHTML = p.benefits.map(b => `
+    <div class="r-benefit">
+      <div class="r-ben-icon">${b.icon}</div>
+      <div class="r-ben-text">
+        <div class="r-ben-title">${b.title}</div>
+        <div class="r-ben-sub">${b.sub}</div>
+      </div>
+    </div>`).join('');
+
+  // quote
+  document.getElementById('rQuote').textContent = p.quote;
+
+  // metrics
+  document.getElementById('rMetrics').innerHTML = p.metrics.map(m => `
+    <div class="r-metric">
+      <div class="r-met-label"><span>${m.label}</span><span>Gamma vs Mercado</span></div>
+      <div class="r-met-bars">
+        <div class="r-bar-row">
+          <div class="r-bar-name">GQ</div>
+          <div class="r-bar-track"><div class="r-bar-fill gq" style="width:0%" data-w="${m.gq}%"></div></div>
+          <div class="r-bar-val" style="color:var(--orange)">${m.gq}%</div>
+        </div>
+        <div class="r-bar-row">
+          <div class="r-bar-name" style="color:rgba(255,255,255,.3)">MKT</div>
+          <div class="r-bar-track"><div class="r-bar-fill mk" style="width:0%" data-w="${m.mk}%"></div></div>
+          <div class="r-bar-val" style="color:rgba(255,255,255,.4)">${m.mk}%</div>
+        </div>
+      </div>
+    </div>`).join('');
+
+  // WA button
+  const waUrl = 'https://wa.me/' + CFG.brand.waNumber + '?text=' + encodeURIComponent(p.waMsg);
+  document.getElementById('rWaBtn').onclick = () => window.open(waUrl,'_blank');
+
+  show('s-result');
+
+  // animate bars after render
+  setTimeout(() => {
+    document.querySelectorAll('.r-bar-fill').forEach(el => {
+      el.style.width = el.dataset.w;
+    });
+  }, 400);
+}
+
+function restartQuiz() {
+  curQ = 0; answers = []; userData = {};
+  ['f-nome','f-email','f-wpp'].forEach(id => { document.getElementById(id).value = ''; });
+  setProgress(0, CFG.questions.length);
+  document.getElementById('fixed-cta').classList.remove('show');
+  show('s-intro');
+}
+</script>
+</body>
+</html>
